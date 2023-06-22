@@ -47,7 +47,7 @@ When you press **Upload RDF files** you will be prompted to select a file, you m
 
 Once you have selected the ontology file, the file will be added to the list of imports. You may then proceed to press the import button on the right-hand side of that item in the list, and you will be prompted with the following window:
 
-![GraphdbImage](./imgs/importsetttings.png)
+![GraphdbImage](./imgs/importsettings.png)
 
 In the **Base IRI** field you should put in the basic iri that defines new concepts that do not belong to RDF or any other imports within the ontology. In all of the ontologies mentioned above, this IRI is: https://www.dictionary.com/browse/
 Once you have entered the Base IRI, press Import and the ontology should be imported successfully as the image follows:
