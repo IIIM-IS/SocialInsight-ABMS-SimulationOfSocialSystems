@@ -15,7 +15,7 @@ Open GraphDB, it will open up a command window and it will open the DB on the br
 If the browser doesn't open, you may open the GraphDB Desktop window and press "Open GraphDB Workbench"
 as seen in the following figure:
 
-![Drag Racing](graphdb.png)
+![GraphdbImage](./imgs/graphdb.png)
 
 ### Step 3
 
