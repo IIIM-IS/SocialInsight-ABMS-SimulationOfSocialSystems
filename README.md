@@ -22,3 +22,5 @@ The project should open after you have selected the folder and pressed open.
 Should the following (Figure 4) pop up on the top of the IDE, you may need to either download the version of JDK that you are missing (the one that says in the warning), OR if you want to update the project to be of the version of JDK you currently have, you may choose to press *Configure* and select your own version - should only be done if you are updating the project or will not be contributing to it.
 <p><img src="README_img/step3_configure.png" alt="Intellij Community Edition"/></p>
 <p><em>Figure 4: JDK version warning</em></p>
+
+Once there is no warning, you may press the green play button to run the program, which will start by running Main.java.
