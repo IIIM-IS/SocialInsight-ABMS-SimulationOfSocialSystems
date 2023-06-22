@@ -22,20 +22,24 @@ import java.io.*;
 public class Main {
 
     public static void main(String[] args) {
+
+        int n_agent = 8;
+        int iterations = 10;
+
         // TODO: ADD VARIABLE FOR PRINT ENABLE, if its on then it'll print out (at different stages in the process), otherwise it doesn't
         final long startTime = System.currentTimeMillis();
         // OntologyParser takes care of retrieving all the data from the ontology, currently only retrieving data on Parameters and ParameterRelationships
         OntologyParser onto_parser = new OntologyParser("./substance-use.ttl");
         // Sim initializer will take care of creating everything for the agents given the data from the ontology
-        SimInitializer sim_init = new SimInitializer(80000,onto_parser.getParameters(), onto_parser.getPerceptionRelationships(), onto_parser.getMovementActions(), onto_parser.getAcquireActions(), onto_parser.getConsumeActions());
+        SimInitializer sim_init = new SimInitializer(n_agent,onto_parser.getParameters(), onto_parser.getPerceptionRelationships(), onto_parser.getMovementActions(), onto_parser.getAcquireActions(), onto_parser.getConsumeActions());
         // Agent[] agents = sim_init.createAgents(onto_parser.getParameters(), onto_parser.getPerceptionRelationships(), onto_parser.getMovementActions(), onto_parser.getAcquireActions(), onto_parser.getConsumeActions());
         Agent[] agents = sim_init.getAgents();
         // Sim controller will take care of running the simulation
         for (Agent a : agents){
             System.out.println(a.toString());
         }
-        SimController sim_control = new SimController(agents, 93);
-        // TODO : run the simulation for 3 days
+        SimController sim_control = new SimController(agents, iterations);
+
         sim_control.loop();
         final long endTime = System.currentTimeMillis();
         System.out.println("Total execution time: " + (endTime - startTime));
