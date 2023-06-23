@@ -2,6 +2,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 import java.util.Arrays;
 
+
 // behavior class
 // one method with behave
 // routine, smoking behavior, it basically says behave
@@ -117,7 +118,16 @@ public class Agent {
 //        }
         this.decide();
     }
+    private Double commitmentModifier(){
+        if (this.inCommitment){
+            return 1.5;
+        }
+        return 0.0;
+    }
     private void decide() {
+        // In decision-making, the agent goes over each possible action and their value, picking the highest valued action
+        // should they decide to do nothing should multiple actions have the same value?
+        // should they decide to pick a random action if multiple actions have the same value but have a higher value than others? If so, where is the cutoff
         // TODO: commitments which have been fulfilled should not be in the list anymore of commitments..
         System.out.println("I am deciding");
         List<Double> moveToActionValues = new ArrayList<>();
@@ -134,10 +144,9 @@ public class Agent {
             if (!this.movementActions.get(i).equals(this.location)){
                 if (this.movementActions.get(i).isPossible(this.lastPerceivedTime)){
                     // System.out.println("Final value for " + this.movementActions.get(i).getName() + " = " + this.movementActions.get(i).calculateActionValue(this.location, this.resources, this.parameters, this.lastPerceivedTime));
-                    Double value = this.movementActions.get(i).calculateActionValue(this.location, this.resources, this.parameters, this.lastPerceivedTime);
-                    if (this.inCommitment){
-                        value -= 1.5;
-                    }
+                    Double value = this.movementActions.get(i).calculateActionValueGeneral(this.location, this.resources, this.parameters, this.lastPerceivedTime);
+                    // applying the commitment modifier
+                    value = value - this.commitmentModifier();
                     if (moveToMaximum < value){
                         moveToMaximum = value;
                         moveToIndex = i;
@@ -148,10 +157,9 @@ public class Agent {
         for (int i = 0 ; i < this.acquireActions.size(); i++){
             if( this.acquireActions.get(i).isPossible(this.lastPerceivedTime)){
                 // System.out.println("Final value for " + this.acquireActions.get(i).getName() + " = " + this.acquireActions.get(i).calculateActionValue(this.location, this.resources, this.parameters, this.lastPerceivedTime));
-                Double value = this.acquireActions.get(i).calculateActionValue(this.location, this.resources, this.parameters, this.lastPerceivedTime);
-                if (this.inCommitment){
-                    value -= 1.5;
-                }
+                Double value = this.acquireActions.get(i).calculateActionValueGeneral(this.location, this.resources, this.parameters, this.lastPerceivedTime);
+                // applying the commitment modifier
+                value = value - this.commitmentModifier();
                 if (acquireMaximum < value){
                     acquireMaximum = value;
                     acquireIndex = i;
@@ -171,10 +179,9 @@ public class Agent {
                 // then we check if the consumption is actually possible
                 if (this.consumeActions.get(i).isPossible(this.lastPerceivedTime)){
                     // System.out.println("Final value for " + this.consumeActions.get(i).getName() + " = " + this.consumeActions.get(i).calculateActionValue(this.location, this.resources, this.parameters, this.lastPerceivedTime));
-                    Double value = this.consumeActions.get(i).calculateActionValue(this.location, this.resources, this.parameters, this.lastPerceivedTime);
-                    if (this.inCommitment){
-                        value -= 1.5;
-                    }
+                    Double value = this.consumeActions.get(i).calculateActionValueGeneral(this.location, this.resources, this.parameters, this.lastPerceivedTime);
+                    // applying the commitment modifier
+                    value = value - this.commitmentModifier();
                     if (consumeMaximum < value){
                         consumeMaximum = value;
                         consumeIndex = i;
@@ -182,9 +189,7 @@ public class Agent {
                 }
             }
         }
-//        System.out.println("Maximum value for move to actions = " + moveToMaximum);
-//        System.out.println("Maximum value for acquire actions = " + acquireMaximum);
-//        System.out.println("Maximum value for consume actions = " + consumeMaximum );
+
         if (moveToMaximum > acquireMaximum && moveToMaximum > consumeMaximum){
             System.out.println("I want to " + this.movementActions.get(moveToIndex).getName() + " with value " + moveToMaximum);
             this.movementActions.get(moveToIndex).executeAction(this);
@@ -201,24 +206,15 @@ public class Agent {
             }else{
                 this.consumeActions.get(consumeIndex).executeAction(this, this.location, true);
             }
-
-
-            // this.act("consume",this.consumeActions.get(consumeIndex));
         }else {
+            // currently if all highest actions of each category (move, consume, acquire) have the same value then the agent chooses to do nothing
+            // here we would add that if they are above a certain threshold, the agent could pick one at random
             System.out.println("I want to do nothing");
         }
-
-
-        // if in a commitment, likelihood of selecting an moveto action is very low
-        // perhaps they get a modifier that could make them negative and if there are any positive, you could move somewhere else
-
-        // get all action values, pick highest
-
     }
+
     private void act(String type, Action action) {
         System.out.println("I am acting");
-
-
     }
 
 
