@@ -119,92 +119,77 @@ public class Agent {
         this.decide();
     }
     private Double commitmentModifier(){
+        // TODO: we may want to add commitments to the ontology with a modifier, so that there are different levels of commitments
         if (this.inCommitment){
             return 1.5;
         }
         return 0.0;
+    }
+    private Map.Entry<Integer, Double> compareActionValue(Action action, Integer actionIndex, Map.Entry<Integer, Double> highestPair){
+        if(action.isPossible(this.lastPerceivedTime)){
+            // System.out.println("Final value for " + this.movementActions.get(i).getName() + " = " + this.movementActions.get(i).calculateActionValue(this.location, this.resources, this.parameters, this.lastPerceivedTime));
+            Double value = action.calculateActionValueGeneral(this.location, this.resources, this.parameters, this.lastPerceivedTime);
+            // applying the commitment modifier
+            value = value - this.commitmentModifier();
+            if (highestPair.getValue() < value){
+                return new AbstractMap.SimpleEntry<>(actionIndex, value);
+            }
+        }
+        return highestPair;
     }
     private void decide() {
         // In decision-making, the agent goes over each possible action and their value, picking the highest valued action
         // should they decide to do nothing should multiple actions have the same value?
         // should they decide to pick a random action if multiple actions have the same value but have a higher value than others? If so, where is the cutoff
         // TODO: commitments which have been fulfilled should not be in the list anymore of commitments..
+        // TODO: make a better way to pick the maximum for each of the action types (right now its just a simple way)
         System.out.println("I am deciding");
-        List<Double> moveToActionValues = new ArrayList<>();
-        List<Double> acquireActionValues = new ArrayList<>();
-        List<Double> consumeActionValues = new ArrayList<>();
 
-        Double moveToMaximum = 0.0;
-        int moveToIndex = 0;
-        Double acquireMaximum = 0.0;
-        int acquireIndex = 0;
-        Double consumeMaximum = 0.0;
-        int consumeIndex = 0;
+        Map.Entry<Integer, Double> moveToHighest = new AbstractMap.SimpleEntry<>(0, 0.0);
+        Map.Entry<Integer, Double> acquireHighest = new AbstractMap.SimpleEntry<>(0, 0.0);
+        Map.Entry<Integer, Double> consumeHighest = new AbstractMap.SimpleEntry<>(0, 0.0);
+
         for (int i = 0 ; i < this.movementActions.size(); i++){
             if (!this.movementActions.get(i).equals(this.location)){
-                if (this.movementActions.get(i).isPossible(this.lastPerceivedTime)){
-                    // System.out.println("Final value for " + this.movementActions.get(i).getName() + " = " + this.movementActions.get(i).calculateActionValue(this.location, this.resources, this.parameters, this.lastPerceivedTime));
-                    Double value = this.movementActions.get(i).calculateActionValueGeneral(this.location, this.resources, this.parameters, this.lastPerceivedTime);
-                    // applying the commitment modifier
-                    value = value - this.commitmentModifier();
-                    if (moveToMaximum < value){
-                        moveToMaximum = value;
-                        moveToIndex = i;
-                    }
-                }
+                moveToHighest = this.compareActionValue(this.movementActions.get(i), i, moveToHighest);
             }
         }
         for (int i = 0 ; i < this.acquireActions.size(); i++){
-            if( this.acquireActions.get(i).isPossible(this.lastPerceivedTime)){
-                // System.out.println("Final value for " + this.acquireActions.get(i).getName() + " = " + this.acquireActions.get(i).calculateActionValue(this.location, this.resources, this.parameters, this.lastPerceivedTime));
-                Double value = this.acquireActions.get(i).calculateActionValueGeneral(this.location, this.resources, this.parameters, this.lastPerceivedTime);
-                // applying the commitment modifier
-                value = value - this.commitmentModifier();
-                if (acquireMaximum < value){
-                    acquireMaximum = value;
-                    acquireIndex = i;
-                }
-            }
+            acquireHighest =  this.compareActionValue(this.acquireActions.get(i), i, acquireHighest);
 
         }
         for (int i = 0 ; i < this.consumeActions.size(); i++){
             // do i have the resource AND is it enough for the consume action OR am i able to acquire it at this time
-            if (
-                    (this.resources.containsKey(this.consumeActions.get(i).getResource())
-                            &&
-                            this.consumeActions.get(i).isEnoughToConsume(this.resources.get(this.consumeActions.get(i).getResource())))
+            if ((this.resources.containsKey(this.consumeActions.get(i).getResource())
+                    && this.consumeActions.get(i).isEnoughToConsume(this.resources.get(this.consumeActions.get(i).getResource())))
                     ||
                     this.consumeActions.get(i).isPossibleToAcquire(this.lastPerceivedTime))
             {
-                // then we check if the consumption is actually possible
-                if (this.consumeActions.get(i).isPossible(this.lastPerceivedTime)){
-                    // System.out.println("Final value for " + this.consumeActions.get(i).getName() + " = " + this.consumeActions.get(i).calculateActionValue(this.location, this.resources, this.parameters, this.lastPerceivedTime));
-                    Double value = this.consumeActions.get(i).calculateActionValueGeneral(this.location, this.resources, this.parameters, this.lastPerceivedTime);
-                    // applying the commitment modifier
-                    value = value - this.commitmentModifier();
-                    if (consumeMaximum < value){
-                        consumeMaximum = value;
-                        consumeIndex = i;
-                    }
-                }
+                consumeHighest = this.compareActionValue(this.consumeActions.get(i), i, consumeHighest);
             }
         }
+        //this.pickAction(moveToIndex, moveToMaximum, acquireIndex, acquireMaximum, consumeIndex, consumeMaximum);
+        this.decideAction(moveToHighest, acquireHighest, consumeHighest);
+    }
 
-        if (moveToMaximum > acquireMaximum && moveToMaximum > consumeMaximum){
-            System.out.println("I want to " + this.movementActions.get(moveToIndex).getName() + " with value " + moveToMaximum);
-            this.movementActions.get(moveToIndex).executeAction(this);
-            // this.act("move", this.movementActions.get(moveToIndex));
-        }else if( acquireMaximum > moveToMaximum && acquireMaximum > consumeMaximum){
-            System.out.println("I want to " + this.acquireActions.get(acquireIndex).getName() + " with value " + acquireMaximum);
-            this.acquireActions.get(acquireIndex).executeAction(this, this.location);
-            // this.act("acquire", this.acquireActions.get(acquireIndex));
-        }else if ( consumeMaximum > moveToMaximum && consumeMaximum > acquireMaximum){
-            System.out.println("I want to " + this.consumeActions.get(consumeIndex).getName() + " with value " + consumeMaximum);
-            // if we have enough of the resource then we consume it
-            if(this.resources.containsKey(this.consumeActions.get(consumeIndex).getResource()) && this.consumeActions.get(consumeIndex).isEnoughToConsume(this.resources.get(this.consumeActions.get(consumeIndex).getResource()))){
-                this.consumeActions.get(consumeIndex).executeAction(this, this.location, false);
+    private void decideAction( Map.Entry<Integer, Double> moveToHighest, Map.Entry<Integer, Double> acquireHighest, Map.Entry<Integer, Double> consumeHighest){
+        if (moveToHighest.getValue() > acquireHighest.getValue() && moveToHighest.getValue() > consumeHighest.getValue()){
+            // if the highest value is a moveTo action
+            System.out.println("I want to " + this.movementActions.get(moveToHighest.getKey()).getName() + " with value " + moveToHighest.getValue());
+            this.movementActions.get(moveToHighest.getKey()).executeAction(this);
+        } else if (acquireHighest.getValue() > moveToHighest.getValue() && acquireHighest.getValue() > consumeHighest.getValue()){
+            // if the highest value is an acquire action
+            System.out.println("I want to " + this.acquireActions.get(acquireHighest.getKey()).getName() + " with value " + acquireHighest.getValue());
+            this.acquireActions.get(acquireHighest.getKey()).executeAction(this, this.location);
+        } else if(consumeHighest.getValue() > moveToHighest.getValue() && consumeHighest.getValue() > acquireHighest.getValue()){
+            // if the highest value is a consume action
+            System.out.println("I want to " + this.consumeActions.get(consumeHighest.getKey()).getName() + " with value " + consumeHighest.getValue());
+            if(this.resources.containsKey(this.consumeActions.get(consumeHighest.getKey()).getResource()) && this.consumeActions.get(consumeHighest.getKey()).isEnoughToConsume(this.resources.get(this.consumeActions.get(consumeHighest.getKey()).getResource()))){
+                // if the agent has the resource then we can just consume
+                this.consumeActions.get(consumeHighest.getKey()).executeAction(this, this.location, false);
             }else{
-                this.consumeActions.get(consumeIndex).executeAction(this, this.location, true);
+                // if the agent doesn't have the resource then it needs to acquire
+                this.consumeActions.get(consumeHighest.getKey()).executeAction(this, this.location, true);
             }
         }else {
             // currently if all highest actions of each category (move, consume, acquire) have the same value then the agent chooses to do nothing
@@ -216,8 +201,6 @@ public class Agent {
     private void act(String type, Action action) {
         System.out.println("I am acting");
     }
-
-
 
     public void consumeResource(String resource, Double quantity){
         System.out.println("Consuming " + resource + "  current value " + this.resources.get(resource) + " consuming " + quantity.toString());

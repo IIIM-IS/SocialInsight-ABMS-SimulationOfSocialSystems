@@ -183,6 +183,8 @@ public class Action {
         // return action value
         Double finalActionValue = parameterFactorsModifier +commitmentFactorModifier + preconditionsModifier;
         // System.out.println("Final value calculation = " + parameterFactorsModifier + " + " + commitmentFactorModifier + " - " + preconditionsModifier);
+
+
         return finalActionValue;
     }
 
