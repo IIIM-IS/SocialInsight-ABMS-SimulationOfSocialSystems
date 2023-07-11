@@ -181,7 +181,7 @@ public class Action {
         // get the commitment factor modifier
         Double commitmentFactorModifier = this.calculateCommitmentFactorValue(lastPerceivedTime);
         // return action value
-        Double finalActionValue = parameterFactorsModifier +commitmentFactorModifier + preconditionsModifier;
+        Double finalActionValue = parameterFactorsModifier + commitmentFactorModifier + preconditionsModifier;
         // System.out.println("Final value calculation = " + parameterFactorsModifier + " + " + commitmentFactorModifier + " - " + preconditionsModifier);
 
 
