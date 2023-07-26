@@ -23,8 +23,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        int n_agent = 8;
-        int iterations = 10;
+        int n_agent = 3;
+        int iterations = 2;
 
         // TODO: ADD VARIABLE FOR PRINT ENABLE, if its on then it'll print out (at different stages in the process), otherwise it doesn't
         final long startTime = System.currentTimeMillis();

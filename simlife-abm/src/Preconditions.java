@@ -33,13 +33,16 @@ public class Preconditions {
 
     public void setAcquire(Acquire acquireAction) { this.resourceAction = acquireAction; }
     public boolean isPossible(int currentTime){
+        // checks if its possible to execute the action given the precontions
         boolean possibilityTime = true;
         boolean possibilityLocation = true;
         boolean possibilityResource = true;
         if (this.time != null){
+            // if this action has a precondition of time, then we need to check if the current time is within the time period
             possibilityTime = this.time.isWithinTimePeriod(currentTime);
         }
         if (this.location != null){
+            // if there is a location precondition then we need to check if moving to that location (executing the action) is possible (if it has a precondition time)
             possibilityLocation = this.locationAction.isPossible(currentTime);
         }
 //        if (this.resource != null){

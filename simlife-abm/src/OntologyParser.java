@@ -36,6 +36,8 @@ public class OntologyParser {
         this.model = ModelFactory.createDefaultModel();
         model.read("./substance-use.ttl");
         this.imodel = ModelFactory.createRDFSModel(model);
+        // Currently we are retrieving only one class of agents (Child), this needs to be changed,
+        // such as list is provided as an input on which types of agents we would like to have in our simulation
         this.targetClass = "Child";
         this.parameters = new ArrayList<>();
         this.perceptions = new ArrayList<>();

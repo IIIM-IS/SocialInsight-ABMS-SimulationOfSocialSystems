@@ -37,6 +37,7 @@ public class ParameterState {
     }
 
     public void updateValue(Double val){
+        // when this function is called the interactions mediator takes care of updating the objects within this paramater's relationship
         double comp1 = (Double.compare(val, this.param.getMax()));
         // System.out.println(" trying to update value to " + val + " max is " + this.getParam().getMax());
         if (comp1 < 0) {

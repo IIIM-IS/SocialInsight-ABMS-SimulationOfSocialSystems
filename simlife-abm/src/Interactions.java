@@ -64,6 +64,7 @@ public class Interactions implements InteractionsMediator{
     }
 
     public void internalInteraction(ParameterState ps){
+        // TODO: the trigger is here
         // what we need here is the objects from psr.getObjects()
         // and we need the functions which will be ps.getParam().getFunctions()
         String[] functions = ps.getParam().getFunctions();

@@ -173,19 +173,19 @@ public class Action {
 
     }
 
-    public Double calculateActionValueGeneral(Agent agent) {
-        // right now we are taking the agent because we are only keeping track of Parameters and not ParameterStates and we also need their location and list of resources for pre-conditions
-        // possibility check, is action possible within the timeperiod
+    public Double calculateActionValueGeneral(String location, Map<String, Double> resources, ParameterState[] parameterStates, int lastPerceivedTime) {
+        // get the preconditions modifier from the class Action and add it the posession (or non-posession of the resource and quantity)
+        Double preconditionsModifier = this.calculatePreconditionsModifier(location, lastPerceivedTime);
+        // get the parameterFactors modifier
+        Double parameterFactorsModifier = this.calculateParameterFactorsModifier(parameterStates);
+        // get the commitment factor modifier
+        Double commitmentFactorModifier = this.calculateCommitmentFactorValue(lastPerceivedTime);
+        // return action value
+        Double finalActionValue = parameterFactorsModifier + commitmentFactorModifier + preconditionsModifier;
+        // System.out.println("Final value calculation = " + parameterFactorsModifier + " + " + commitmentFactorModifier + " - " + preconditionsModifier);
 
-        // if it is possible, we can move on to checking the value
-        // calculate preconditions modifier
 
-        // calculate commitment modifier
-
-        // calculate parameter factors modifier
-
-
-        return 1.0;
+        return finalActionValue;
     }
 
     public void executeGeneralAction(Agent agent){
