@@ -1,4 +1,4 @@
-# SIMLife
+# SocialInsight
 
 ## Getting Started
 
