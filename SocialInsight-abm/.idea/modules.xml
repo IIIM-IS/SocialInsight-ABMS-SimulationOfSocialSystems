@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/simlife-abm.iml" filepath="$PROJECT_DIR$/simlife-abm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SocialInsight-abm.iml" filepath="$PROJECT_DIR$/SocialInsight-abm.iml" />
     </modules>
   </component>
 </project>

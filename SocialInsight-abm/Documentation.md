@@ -2,16 +2,16 @@
 
 The following file contains documentation for the classes and functions existing in this project.
 
-The SIMLife approach is made up of three main interconnected components: an upper-ontology, a domain-specific ontology, and an agent-based model (ABM) 
+The SocialInsight approach is made up of three main interconnected components: an upper-ontology, a domain-specific ontology, and an agent-based model (ABM) 
 framework. The upper-ontology describes terms encapsulating the components of an ABM, such as agents, parameters, actions, and perceptions. 
 The domain-specific ontology describes a target social phenomenon to simulate using the general-terms from the upper-ontology, and therefore in the 
 context of ABMs. Lastly, the ABM framework utilises the domain information provided - by means of a file with the combination of the ontologies 
 aforementioned - to execute a simulation given pre-defined settings. 
 
 <p><img src="imgs/process-flow.png" alt="Flow of the approach"/></p>
-<p><em>Figure 1: Illustration of the iterative process involved in the ontology-driven agent-based modeling approach (SIMLife) </em></p>
+<p><em>Figure 1: Illustration of the iterative process involved in the ontology-driven agent-based modeling approach (SocialInsight) </em></p>
 
-Illustrated in Figure 1 is the complete flow of the iterative process in SIMLife, as previously mentioned the ontologies are used as input 
+Illustrated in Figure 1 is the complete flow of the iterative process in SocialInsight, as previously mentioned the ontologies are used as input 
 for the ABM framework made up of three distinct components and steps to running a complete simulation: Ontology Parser, Sim-Initializer, 
 and Sim-Controller. As the name entails, the ontology parser is a class that parses the information from the ontologies, it is the first 
 component in the framework, and it contains the necessary functions to retrieve the correct information that will later be used by the 
@@ -47,7 +47,7 @@ function **parse_data()**.
 There are a total of 14 attributes within this class:
 * *base_prefix*, *base_uri*, *rdf_uri*, *rdfs_uri*, and *base_query_header* are all attributes required for querying with SPARQL and
 retrieving the information in the ontologies. 
-  * *base_prefix* is the prefix term used in the denomination of our terms, created specifically for SIMLife.
+  * *base_prefix* is the prefix term used in the denomination of our terms, created specifically for SocialInsight.
   * *base_uri* is the website link containing descriptions and pages for the terms.
   * *rdf_uri* is the link to version of RDF used in the ontologies.
   * *rdfs_uri* is the link to version of RDFS used in the ontologies.

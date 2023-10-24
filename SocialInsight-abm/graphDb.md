@@ -38,7 +38,7 @@ If it doesn't then press the icon that should be green and GraphDB will turn on 
 
 Once the repository is up and running, to import your ontologies or the ontologies in this repository, you can go to **Import** on the left-hand side of the GraphDB window.
 In the Import window, you have three different options for importing ontologies, the one we will be covering in this step is option 1: Upload RDF files.
-Within this repository and the simlife-abm folder, you have ontology files ending with .ttl. 
+Within this repository and the SocialInsight-abm folder, you have ontology files ending with .ttl. 
 *  The file used within the simulation is currently *substance-use.ttl*, which should contain everything in the upper-ontology and the domain-specific ontology.
 *  The upperOntology.ttl file contains the definition of ontological terms used in the domain-specific ontology (domainSpecificOntology.ttl) and is therefore needed for properly viewing and querying the domain-specific ontology.
 *  The domainSpecificOntology.ttl contains the definition of a social domain to be used in the simulation, therefore which agents, what kind of parameters, actions, perceptions and causal relationships.
