@@ -1,4 +1,4 @@
-# SimLife
+# SIMLife
 
 ## Getting Started
 
