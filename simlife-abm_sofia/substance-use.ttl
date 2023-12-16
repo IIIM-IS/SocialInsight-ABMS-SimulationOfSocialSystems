@@ -1,0 +1,351 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix concept: <https://www.dictionary.com/browse/> .
+
+
+
+concept:Thing a rdfs:Class .
+    # rdfs:label "The class of things, the root of the scope" .
+
+concept:Agent a rdfs:Class ;
+    rdfs:subClassOf concept:Thing .
+    # rdf:label "Everything and anything that may perceive, decide, and act during run-time" .
+
+concept:Autonomous a rdfs:Class ;
+    rdfs:subClassOf concept:Agent .
+    # rdfs:label "Anything that has agency to move on its own without external forces" .
+
+concept:NonAutonomous a rdfs:Class ;
+    rdfs:subClassOf concept:Agent .
+    # rdfs:label "Anything that cannot move on its own without external forces" .
+
+# Class: Parameter
+
+concept:agentParameters a rdf:Property ;
+    a rdf:Bag ;
+    rdfs:range concept:Parameter ;
+    rdfs:domain concept:Agent .
+
+concept:Parameter a rdfs:Class .
+
+concept:name a owl:FunctionalProperty ;
+    rdfs:domain concept:Thing .
+
+concept:paramName a rdf:Property ;
+    rdfs:domain concept:Parameter .
+
+concept:min a rdf:Property ;
+    rdfs:domain concept:Parameter .
+
+concept:max a rdf:Property ;
+    rdfs:domain concept:Parameter .
+
+# -----
+
+# Class: Perception
+
+concept:agentPerceptions a rdf:Property ;
+    a rdf:Bag ;
+    rdfs:range concept:Perception ;
+    rdfs:domain concept:Agent .
+
+concept:Perception a rdfs:Class .
+    # rdfs:label "A list of all the possible variables an agent may perceive at any given time" .
+
+
+# -----
+
+# Class: Action
+# actions are affected by : pre-conditions, factors and coefficients, states and coefficients, commitment
+# actions produce: state, commitment, perception
+concept:Action a rdfs:Class .
+
+concept:agentActions a rdf:Property;
+    a rdf:Bag ;
+    rdfs:range concept:Action ;
+    rdfs:domain concept:Agent .
+# There are two distinct types of actions : movement and resource management, resource management further claims two actions, acquisition and consumption
+
+concept:MoveTo rdfs:subClassOf concept:Action ;
+    rdfs:domain concept:Autonomous .
+
+concept:where a rdf:Property ;
+    rdfs:domain concept:MoveTo .
+
+# To be reviewed, perhaps another class after autonomous will be needed, who can consume resources? humans, animals,...
+concept:Acquire rdfs:subClassOf concept:Action ;
+    rdfs:domain concept:Autonomous .
+
+concept:resourceAcquired a rdf:Property;
+    rdfs:domain concept:Acquire .
+
+concept:quantityAcquired a rdf:Property;
+    rdfs:domain concept:Acquire .
+
+concept:Consume rdfs:subClassOf concept:Action ;
+    rdfs:domain concept:Autonomous .
+
+concept:resourceConsumed a rdf:Property;
+    rdfs:domain concept:Consume .
+
+concept:quantityConsumed a rdf:Property;
+    rdfs:domain concept:Consume .
+
+# Classes have Pre-conditions
+# pre-conditions can be LOCATION, TIME, and POSSESSION necessary to perform the action
+
+concept:State a rdfs:Class .
+
+concept:stateName a rdf:Property ;
+    rdfs:domain concept:State .
+
+## preconditions
+concept:Preconditions a rdfs:Class .
+
+concept:preconditions a rdf:Property ;
+    rdfs:range concept:Preconditions ;
+    rdfs:domain concept:Action .
+
+# location is a property of pre-conditions (which can be empty)
+concept:location a rdf:Property ;
+    rdfs:domain concept:Preconditions .
+
+concept:Timeperiod a rdfs:Class.
+
+concept:periodStart a rdf:Property ;
+    rdfs:domain concept:Timeperiod .
+
+concept:periodEnd a rdf:Property ;
+    rdfs:domain concept:Timeperiod .
+
+
+# timePeriod is a property of pre-conditions (which can be empty)
+concept:availablePeriod a rdf:Property ;
+    rdfs:range concept:Timeperiod ;
+    rdfs:domain concept:Preconditions .
+
+# posession is a property of pre-conditions (which can be empty)
+concept:resource a rdf:Property ;
+    rdfs:domain concept:Preconditions .
+
+concept:parameterFactors a rdf:Property ;
+    a rdf:Seq ;
+    rdfs:range concept:Parameter ;
+    rdfs:domain concept:Action .
+
+concept:parameterWeights a rdf:Property ;
+    a rdf:Seq ;
+    rdfs:domain concept:Action .
+
+concept:stateAffects a rdf:Property;
+    a rdf:Seq ;
+    rdfs:range concept:State ;
+    rdfs:domain concept:Action .
+
+concept:stateWeights a rdf:Property ;
+    a rdf:Seq ;
+    rdfs:domain concept:Action .
+
+## state an action may produce
+concept:stateProduced a rdf:Property ;
+    rdfs:range concept:State ;
+    rdfs:domain concept:Action .
+
+concept:Commitment a rdfs:Class .
+
+concept:commitmentAction a rdf:Property ;
+    rdfs:range concept:Action ;
+    rdfs:domain concept:Commitment .
+
+
+concept:commitmentPeriod a rdf:Property ;
+    rdfs:range concept:Timeperiod ;
+    rdfs:domain concept:Commitment .
+
+concept:Relationship a rdfs:Class .
+concept:objects a rdf:Property ;
+    a rdf:Seq ;
+    rdfs:range concept:Parameter ;
+    rdfs:domain concept:Relationship .
+concept:functions a rdf:Property ;
+    a rdf:Seq ;
+    rdfs:domain concept:Relationship .
+
+concept:perceptionRelationship a rdf:Property ;
+    rdfs:range concept:Relationship ;
+    rdfs:domain concept:Perception .
+
+concept:parameterRelationship a rdf:Property ;
+    rdfs:range concept:Relationship ;
+    rdfs:domain concept:Parameter .
+
+concept:actionRelationship a rdf:Property ;
+    rdfs:range concept:Relationship ;
+    rdfs:domain concept:Action .
+
+# -----
+concept:locationsList a rdf:Bag ;
+    rdf:_1 "School" ;
+    rdf:_2 "Home" ;
+    rdf:_3 "Store" ;
+    rdf:_4 "Sports Club" ;
+    rdf:_5 "Street" .
+
+concept:Object a rdfs:Class ;
+    rdfs:subClassOf concept:NonAutonomous .
+
+concept:Place a rdfs:Class ;
+    rdfs:subClassOf concept:NonAutonomous .
+
+# Class: Human
+
+concept:Human a rdfs:Class ;
+    rdfs:subClassOf concept:Autonomous ;
+    concept:agentParameters concept:humanParameters ;
+    concept:agentPerceptions concept:humanPerceptions ;
+    concept:agentActions concept:humanActions .
+
+concept:urgeToSmoke a concept:Parameter ;
+    concept:min "0.0" ;
+    concept:max "1.0" .
+
+concept:humanParameters
+    rdf:_1 concept:urgeToSmoke .
+
+# ---- HUMAN PERCEPTION
+
+concept:smoking a concept:Perception ;
+    concept:perceptionRelationship concept:smokingRel .
+
+concept:smokingRel
+    concept:objects concept:smokingObjects;
+    concept:functions concept:smokingFunctions .
+
+concept:smokingObjects
+    rdf:_1 concept:urgeToSmoke ;
+    rdf:_2 concept:childAge .
+
+concept:smokingFunctions
+    rdf:_1 "OCURRENT 0.3 * OCURRENT +" ;
+    rdf:_2 "OCURRENT 0.3 * OCURRENT +" .
+
+concept:testPerception a concept:Perception .
+
+concept:humanPerceptions
+    rdf:_1  concept:smoking ;
+    rdf:_2 concept:testPerception .
+
+# Human Actions
+
+
+# -----
+
+# Class: Child
+
+concept:Child a rdfs:Class ;
+    rdfs:subClassOf concept:Human ;
+    concept:agentParameters concept:childParameters ;
+    concept:agentPerceptions concept:childPerceptions ;
+    concept:agentActions concept:childActions .
+    # rdfs:label "A young human, focus-group of this simulation".
+
+# Child parameters
+
+concept:childAge a concept:Parameter ;
+    # rdfs:label "The age in years of a child in school";
+    concept:min "6.0" ;
+    concept:max "16.0".
+
+concept:grades a concept:Parameter ;
+    concept:min "1.0" ;
+    concept:max "10.0" ;
+    concept:parameterRelationship concept:gradesRelationship .
+
+concept:gradesRelationship
+    concept:objects concept:gradesObjects ;
+    concept:functions concept:gradesFunctions .
+
+concept:gradesObjects rdf:_1 concept:urgeToSmoke ;
+    rdf:_2 concept:childAge .
+
+concept:gradesFunctions
+    rdf:_1 "SCURRENT SPREVIOUS - -0.06 1.0 / * OCURRENT * OCURRENT +";
+    rdf:_2 "SCURRENT SPREVIOUS - -0.06 1.0 / * OCURRENT * OCURRENT +" .
+
+concept:childParameters
+    rdf:_1 concept:childAge ;
+    rdf:_2 concept:grades .
+
+# Child Perceptions
+
+# Child Actions
+
+## move to school is a commitment which starts at 8 am and ends at 3 pm
+
+concept:schoolPreConditions
+    concept:availablePeriod concept:schoolPeriod .
+
+concept:MOVETOSCHOOL a concept:MoveTo ;
+    concept:where "School";
+    concept:preconditions concept:schoolPreConditions ;
+    concept:commitmentFactor concept:schoolCommitment .
+
+
+concept:schoolCommitment a concept:Commitment ;
+    concept:commitmentAction concept:MOVETOSCHOOL ;
+    concept:commitmentPeriod concept:schoolPeriod .
+
+concept:schoolPeriod
+    concept:periodStart "8" ;
+    concept:periodEnd "15" .
+
+## consume cigarrette
+
+concept:consumecigPreconditions
+    concept:resource "cigarette" .
+
+concept:consumecigParameterFactors
+    rdf:_1 concept:urgeToSmoke .
+
+concept:consumecigParameterWeights
+    rdf:_1 "1.0" .
+
+concept:CONSUMECIG a concept:Consume ;
+    concept:preconditions concept:consumecigPreconditions ;
+    concept:parameterFactors concept:consumecigParameterFactors ;
+    concept:parameterWeights concept:consumecigParameterWeights ;
+    concept:perceptionProduced concept:smoking ;
+    concept:resourceConsumed "cigarette";
+    concept:quantityConsumed "1";
+    concept:actionRelationship concept:consumecigRel .
+
+# example function, consuming a cigarette decreases the urge to smoke momentarily (need to add functions of time)
+concept:consumecigRel
+    concept:objects concept:cigObjects;
+    concept:functions concept:cigFunctions.
+
+concept:cigObjects
+    rdf:_1 concept:urgeToSmoke .
+concept:cigFunctions
+    rdf:_1 "OCURRENT 0.3 * OCURRENT +" .
+
+## acquire cigarrette, there are 20 cigarettes in a pack
+
+concept:acquirecigPreconditions
+    concept:location "Store" .
+
+concept:ACQUIRECIG a concept:Acquire ;
+    concept:preconditions concept:acquirecigPreconditions ;
+    concept:resourceAcquired "cigarette";
+    concept:quantityAcquired "20".
+
+
+concept:childActions
+    rdf:_1 concept:MOVETOSCHOOL .
+
+concept:humanActions
+    rdf:_1 concept:CONSUMECIG ;
+    rdf:_2 concept:ACQUIRECIG .
+
+
