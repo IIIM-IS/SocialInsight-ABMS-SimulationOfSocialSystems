@@ -340,7 +340,6 @@ concept:ACQUIRECIG a concept:Acquire ;
     concept:resourceAcquired "cigarette";
     concept:quantityAcquired "20".
 
-
 concept:childActions
     rdf:_1 concept:MOVETOSCHOOL .
 
