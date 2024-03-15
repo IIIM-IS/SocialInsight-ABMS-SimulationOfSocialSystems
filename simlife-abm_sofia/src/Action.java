@@ -77,7 +77,8 @@ public class Action {
 
     @Override
     public String toString() {
-        String str = "--------------------\n" +"Action " + this.name + " \n";
+        String str = "ACTIONS | FACTORS | PERCEPTIONS | RELATIONSHIP  --------------------\n" +"Action " + this.name + " \n";
+
         if(this.preconditions != null){
             str += this.preconditions.toString();
         }
@@ -90,6 +91,7 @@ public class Action {
         if(this.commitmentFactor != null){
             str += this.commitmentFactor.toString() + "\n";
         }
+
         if(this.perceptionProduced != null){
             str += "Perception Produced: "+ this.perceptionProduced.toString() + "\n";
         }
@@ -140,6 +142,7 @@ public class Action {
             List<Double> coefficients = new ArrayList<>();
             for (Map.Entry<Parameter, Double> entry : this.parameterFactors.entrySet()) {
                 for (ParameterState p : parameterStates){
+                    // URGE TO SMOKE, AGE, AND GRADES
                     if (p.getParam().equals(entry.getKey())){
                         // get that value for the parameterState
                         // add the normalized value
@@ -151,6 +154,7 @@ public class Action {
                 }
             }
             Double finalValue = 0.0;
+
             for (int i = 0; i < currentValues.size(); i ++){
                 finalValue += currentValues.get(i) * coefficients.get(i);
             }
@@ -158,6 +162,7 @@ public class Action {
             // multiply each by their coefficients and add them to the final value
             // return the final value
             System.out.println(" I have parameter factors with final value : " + finalValue);
+            System.out.println(this.toString());
             return finalValue + 0.5;
         }
         return 0.0;
@@ -183,14 +188,13 @@ public class Action {
         // return action value
         Double finalActionValue = parameterFactorsModifier + commitmentFactorModifier + preconditionsModifier;
         // System.out.println("Final value calculation = " + parameterFactorsModifier + " + " + commitmentFactorModifier + " - " + preconditionsModifier);
-
-
         return finalActionValue;
     }
 
     public void executeGeneralAction(Agent agent){
         if ( this.perceptionProduced != null){
             // send message here
+            System.out.println("Caught perception: " + this.perceptionProduced + " and broadcasting it to: " + agent);
             bc.sendPerception(this.perceptionProduced, agent);
         }
     }

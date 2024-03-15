@@ -131,6 +131,7 @@ public class Agent {
             Double value = action.calculateActionValueGeneral(this.location, this.resources, this.parameters, this.lastPerceivedTime);
             // applying the commitment modifier
             value = value - this.commitmentModifier();
+
             if (highestPair.getValue() < value){
                 return new AbstractMap.SimpleEntry<>(actionIndex, value);
             }
@@ -177,19 +178,41 @@ public class Agent {
             // if the highest value is a moveTo action
             System.out.println("I want to " + this.movementActions.get(moveToHighest.getKey()).getName() + " with value " + moveToHighest.getValue());
             this.movementActions.get(moveToHighest.getKey()).executeAction(this);
+
+            // Send this to all friends -CLARK
+            for (Agent friend : this.getFgroup().getFriends(this)){
+                this.movementActions.get(moveToHighest.getKey()).executeGeneralAction(friend);
+            }
+
         } else if (acquireHighest.getValue() > moveToHighest.getValue() && acquireHighest.getValue() > consumeHighest.getValue()){
             // if the highest value is an acquire action
             System.out.println("I want to " + this.acquireActions.get(acquireHighest.getKey()).getName() + " with value " + acquireHighest.getValue());
             this.acquireActions.get(acquireHighest.getKey()).executeAction(this, this.location);
+
+            // Send this to all friends -CLARK
+            for (Agent friend : this.getFgroup().getFriends(this)){
+                this.acquireActions.get(acquireHighest.getKey()).executeGeneralAction(friend);
+            }
+
         } else if(consumeHighest.getValue() > moveToHighest.getValue() && consumeHighest.getValue() > acquireHighest.getValue()){
             // if the highest value is a consume action
             System.out.println("I want to " + this.consumeActions.get(consumeHighest.getKey()).getName() + " with value " + consumeHighest.getValue());
             if(this.resources.containsKey(this.consumeActions.get(consumeHighest.getKey()).getResource()) && this.consumeActions.get(consumeHighest.getKey()).isEnoughToConsume(this.resources.get(this.consumeActions.get(consumeHighest.getKey()).getResource()))){
                 // if the agent has the resource then we can just consume
                 this.consumeActions.get(consumeHighest.getKey()).executeAction(this, this.location, false);
+
+                // Send this to all friends -CLARK
+                for (Agent friend : this.getFgroup().getFriends(this)) {
+                    this.consumeActions.get(consumeHighest.getKey()).executeGeneralAction(friend);
+                }
             }else{
                 // if the agent doesn't have the resource then it needs to acquire
                 this.consumeActions.get(consumeHighest.getKey()).executeAction(this, this.location, true);
+
+                // Send this to all friends -CLARK
+                for (Agent friend : this.getFgroup().getFriends(this)) {
+                    this.consumeActions.get(consumeHighest.getKey()).executeGeneralAction(friend);
+                }
             }
         }else {
             // currently if all highest actions of each category (move, consume, acquire) have the same value then the agent chooses to do nothing

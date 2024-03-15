@@ -28,7 +28,11 @@ public class SimController {
                 for (int agentIdx = 0; agentIdx < this.agentArray.length; agentIdx++) {
                     // at each timestep, we must call a function to change any parameters that are
                     // affected by time
+                    System.out.println("#########################################");
+                    System.out.println("Agent: " + agentIdx);
+                    System.out.println("#########################################");
                     agentArray[agentIdx].perceive_time(hoursOfDay);
+                    //  System.out.println(agentArray[agentIdx].getFgroup());
                 }
             }
             System.out.println("######################");

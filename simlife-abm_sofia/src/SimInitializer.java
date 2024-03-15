@@ -100,16 +100,16 @@ public class SimInitializer {
         Map <Perception, PerceptionStateRelationship> perceptionStateRelationships = new HashMap<Perception, PerceptionStateRelationship>();
         // for each perception
         int objectCount;
-        for (PerceptionRelationship pr : perceptionRelationships){
+        for (PerceptionRelationship pr : perceptionRelationships) {
             objectCount = 0;
             ParameterState[] parameterStateObjects = new ParameterState[pr.getObjectNr()];
             Parameter[] parameterObjects = pr.getObjects();
             // we need to retrieve the list of objects
-            for ( Parameter p : parameterObjects){
+            for (Parameter p : parameterObjects) {
                 // for each parameter in the list of objects (in PerceptionRelationship)
                 // we are interested in getting the parameterState that matches that Parameter
                 ParameterState ps = getParameterState(parameterStates, p);
-                if ( ps != null){
+                if (ps != null) {
                     // if its not null then we add it to the parameterStateObjects array and increase the index counter
                     parameterStateObjects[objectCount] = ps;
                     objectCount += 1;
@@ -120,6 +120,7 @@ public class SimInitializer {
         }
         return perceptionStateRelationships;
     }
+
     private void createAgents(List<Parameter> parameters, List<PerceptionRelationship> perceptionRelationships, List<MoveTo> movementActions, List<Acquire> acquireActions, List<Consume> consumeActions){
         // for i=nr_agents,
         //      for p in parameters
@@ -131,7 +132,7 @@ public class SimInitializer {
         // InteractionsMediator takes care of dealing with interactions such as Parameter-Parameter and Perception-Parameter
         Agent[] agents = new Agent[this.agentNr];
         BroadcastMediator bc = new BroadcastToFriend();
-        InteractionsMediator ii = new Interactions();
+        InteractionsMediator interactionsmediator = new Interactions();
 
         for (int i = 0; i < this.agentNr; i++){
             // create the parameter states and the relationships for the agent
@@ -147,18 +148,34 @@ public class SimInitializer {
                     // + k + ", Nr of objects = " + v.getObjects().length));
 
             // TODO: Currently every agent has the same actions available (known), we may want to add knowledge of some locations
-            Agent a = new Agent(i, true, bc, parameterStates, ii, perceptionStateRelationships, movementActions, acquireActions, consumeActions, null);
+            Agent a = new Agent(i, true, bc, parameterStates, interactionsmediator, perceptionStateRelationships, movementActions, acquireActions, consumeActions, null);
             agents[i] = a;
         }
+
+        // For 4 agents, 0 - 3
+        //        List<Agent> agentsList = new ArrayList<>(Arrays.asList(agents[0], agents[1])); // Makes a list of agents, with agent 0 and 1
+        //        FriendGroup fg = new FriendGroup(agentsList); // Makes a friend group, fg, consisting of whatever agents are in agentsList
+        //        List<Agent> agentsList2 = new ArrayList<>(Arrays.asList(agents[3], agents[1], agents[2])); // Makes a list of agents, with agent 0 and 1
+        //        FriendGroup fg2 = new FriendGroup(agentsList2);
+        //        agents[0].setFriendGroup(fg); // I am adding friend group fg to agent 0 - agent 0 is now friends with whaterever agents are in fg
+        //        agents[0].setFriendGroup(fg2);
+        //        agents[1].setFriendGroup(fg2);
+        //        agents[2].setFriendGroup(fg2);
+
         // TODO: turn this into proper friend group assignment
-        FriendGroup fg = new FriendGroup(Arrays.asList(agents));
+        FriendGroup fg1 = new FriendGroup(Arrays.asList(Arrays.copyOfRange(agents, agents.length / 2, agents.length)));
+        FriendGroup fg2 = new FriendGroup(Arrays.asList(Arrays.copyOfRange(agents, 0, agents.length / 2)));
         for (int i = 0; i < this.agentNr; i++ ){
-            agents[i].setFriendGroup(fg);
+            if (i < this.agentNr/2) {
+                agents[i].setFriendGroup(fg2);
+            } else {
+                agents[i].setFriendGroup(fg1);
+            }
         }
+
         this.agents = agents;
     }
     public Agent[] getAgents(){
         return this.agents;
     }
-
 }

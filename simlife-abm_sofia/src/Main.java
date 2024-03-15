@@ -23,8 +23,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        int n_agent = 3;
-        int iterations = 2;
+        int n_agent = 10;
+        int iterations = 3;
 
         // TODO: ADD VARIABLE FOR PRINT ENABLE, if its on then it'll print out (at different stages in the process), otherwise it doesn't
         final long startTime = System.currentTimeMillis();
@@ -36,6 +36,7 @@ public class Main {
         Agent[] agents = sim_init.getAgents();
         // Sim controller will take care of running the simulation
         for (Agent a : agents){
+            System.out.println("#########################################");
             System.out.println(a.toString());
         }
         SimController sim_control = new SimController(agents, iterations);
@@ -55,9 +56,5 @@ public class Main {
 
         // 10000 agents, 93 iterations
         // Total execution time: 68166
-
-
-
-
     }
 }

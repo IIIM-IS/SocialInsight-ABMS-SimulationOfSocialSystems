@@ -207,7 +207,7 @@ concept:Human a rdfs:Class ;
     concept:agentActions concept:humanActions .
 
 concept:urgeToSmoke a concept:Parameter ;
-    concept:min "0.0" ;
+    concept:min "0.1" ;
     concept:max "1.0" .
 
 concept:humanParameters
@@ -254,8 +254,8 @@ concept:Child a rdfs:Class ;
 
 concept:childAge a concept:Parameter ;
     # rdfs:label "The age in years of a child in school";
-    concept:min "6.0" ;
-    concept:max "16.0".
+    concept:min "15.0" ;
+    concept:max "15.0".
 
 concept:grades a concept:Parameter ;
     concept:min "1.0" ;
